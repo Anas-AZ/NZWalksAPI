@@ -43,6 +43,23 @@ namespace NZWalks.API.Controllers
 
             return Ok(walksDTO);
         }
+
+        [HttpGet]
+        [Route("{id:Guid}")]
+        public async Task<ActionResult> GetById([FromRoute] Guid id)
+        {
+            var walkDomain = await walkRepository.GetByIdAsync(id);
+
+            if(walkDomain == null)
+            {
+                return NotFound();
+            }
+
+            //Map Domain model to DTO
+            var walkDTO = mapper.Map<WalkDTO>(walkDomain);
+
+            return Ok(walkDTO);
+        }
         
 
     }
