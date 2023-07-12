@@ -22,7 +22,7 @@ namespace NZWalks.API.Repositories
 
 
         public async Task<List<Walk>> GetAllAsync([FromQuery] string? filterOn, [FromQuery] string? filterQuery,
-            [FromQuery] string? sortBy, [FromQuery] bool isAscending)
+            [FromQuery] string? sortBy, [FromQuery] bool isAscending, int pageNumber = 1, int pageSize = 1000)
         {
             var walks = dbContext.Walks.Include("Difficulty").Include("Region").AsQueryable();
 
@@ -49,7 +49,10 @@ namespace NZWalks.API.Repositories
                 }
             }
 
-            return await walks.ToListAsync();
+            //pagination
+            var skipResults = (pageNumber - 1) * pageSize;
+
+            return await walks.Skip(skipResults).Take(pageSize).ToListAsync();
             //return await dbContext.Walks.Include("Difficulty").Include("Region").ToListAsync();    
         }
 
